@@ -1,6 +1,6 @@
 {
   "name": "c4codata",
-  "version": "1.3.8",
+  "version": "1.4.0",
   "unpkg": "./lib/c4codata-umd.js",
   "bin": {
     "odata-js-generator": "lib/cli/index.js"
@@ -35,7 +35,7 @@
     "test:watch": "npm test -- --watch",
     "coverage": "npm test -- --coverage --no-cache",
     "coverage:watch": "npm run coverage -- --watch",
-    "release": "standard-version --no-verify && git push --follow-tags origin master && npm publish",
+    "release": "standard-version --no-verify && git push --follow-tags origin master",
     "prepare": "npm run build && npm test"
   },
   "dependencies": {
@@ -71,7 +71,7 @@
       "json"
     ]
   },
-  "description": "c4c odata javascirpt library",
+  "description": "c4c odata javascript library",
   "homepage": "https://github.com/Soontao/c4codata",
   "author": {
     "name": "Theo Sun",
