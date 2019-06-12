@@ -66,6 +66,10 @@ export interface BatchRequestOptions<T> {
    * SAP OData need Content-Length but standard reject it
    */
   withContentLength?: boolean;
+  /**
+   * CSFR Token should be included on request header
+   */
+  withCsrf?:boolean;
 }
 
 export interface ODataRequest<T> {
@@ -137,7 +141,7 @@ export class OData {
    */
   private commonHeader: { [headerName: string]: string } = {
     "Accept": "application/json",
-    "Accept-Language": "zh",
+    "Accept-Language": "en-US",
     "Content-Type": "application/json"
   };
   private fetchProxy = odataDefaultFetchProxy;
@@ -259,7 +263,7 @@ export class OData {
 
     var config: RequestInit = {
       method: "GET",
-      headers: { "x-csrf-token": "fetch" }
+      headers: { "x-csrf-token": "fetch" } 
     };
 
     if (this.credential) {
@@ -430,7 +434,7 @@ export class OData {
   }
 
   public async newBatchRequest<T>(options: BatchRequestOptions<T>) {
-    var { collection, method = "GET", id, withContentLength = false, params, entity } = options;
+    var { collection, method = "GET", id, withContentLength = false, params, entity, withCsrf=false } = options;
     if (this.forSAP) {
       // for SAP NetWeaver Platform OData, need content length header
       withContentLength = true;
@@ -468,6 +472,12 @@ export class OData {
         rt.init.headers["Content-Length"] = decodeURIComponent(rt.init.body.toString()).length;
       }
 
+      if (withCsrf) {
+        const dynamicHeaders = await this.getHeaders()
+        if (dynamicHeaders["x-csrf-token"]) {
+          rt.init.headers["x-csrf-token"] = dynamicHeaders["x-csrf-token"]
+        }
+      }
     }
 
     rt.init.headers = headers;
