@@ -136,6 +136,7 @@ export class OData {
    * internal csrf token
    */
   private csrfToken: string = "";
+  private sessionCookies : string = ""
   /**
    * dont direct use this object
    */
@@ -226,7 +227,8 @@ export class OData {
         ...GetAuthorizationPair(
           this.credential.username,
           this.credential.password
-        )
+        ),
+        cookie: this.sessionCookies
       };
     }
     if (this.processCsrfToken) {
@@ -276,6 +278,8 @@ export class OData {
     const { response: { headers } } = await this.fetchProxy(this.odataEnd, config);
     if (headers) {
       this.csrfToken = headers.get("x-csrf-token");
+      const cookiesObject =  ( headers as any )._headers['set-cookie']
+      this.sessionCookies = cookiesObject? Array.from( cookiesObject ).join(';') : this.sessionCookies
     } else {
       throw new Error("csrf token need the odata proxy give out headers!");
     }
